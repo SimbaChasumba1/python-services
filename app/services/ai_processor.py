@@ -3,9 +3,9 @@ import json
 import redis
 from groq import Groq
 
-# -----------------------------
+
 # Redis Setup (FAIL SAFE)
-# -----------------------------
+
 redis_url = os.getenv("REDIS_URL")
 
 redis_client = None
@@ -24,9 +24,8 @@ else:
     print("REDIS_URL not set — caching disabled")
 
 
-# -----------------------------
 # Groq Setup
-# -----------------------------
+
 groq_api_key = os.getenv("GROQ_API_KEY")
 
 client = Groq(api_key=groq_api_key) if groq_api_key else None
@@ -35,9 +34,9 @@ if not client:
     print("GROQ_API_KEY not set — AI will fail safely")
 
 
-# -----------------------------
+
 # DEFAULT RESPONSE SHAPE
-# -----------------------------
+
 def empty_response(message=""):
     return {
         "score": 0,
@@ -48,9 +47,9 @@ def empty_response(message=""):
     }
 
 
-# -----------------------------
+
 # SAFE JSON PARSER
-# -----------------------------
+
 def safe_json_parse(content: str):
     if not content or not content.strip():
         raise ValueError("Empty AI response")
@@ -62,9 +61,9 @@ def safe_json_parse(content: str):
         raise ValueError("AI returned invalid JSON")
 
 
-# -----------------------------
+
 # MAIN FUNCTION
-# -----------------------------
+
 def analyze_with_ai(text: str):
     if not text:
         return empty_response("No input text provided")
@@ -82,15 +81,15 @@ def analyze_with_ai(text: str):
         except Exception as e:
             print("Redis read error:", e)
 
-    # -----------------------------
+    
     # 2. AI unavailable
-    # -----------------------------
+  
     if not client:
         return empty_response("AI service not configured")
 
-    # -----------------------------
+   
     # 3. Groq AI Call (UPDATED MODEL)
-    # -----------------------------
+
     try:
         prompt = f"""
 You are a resume analysis AI.
@@ -111,7 +110,7 @@ Resume:
 """
 
         response = client.chat.completions.create(
-            model="llama-3.1-70b-versatile",  # ✅ FIXED MODEL
+            model="llama-3.3-70b-versatile",  
             messages=[
                 {"role": "system", "content": "You MUST return only valid JSON."},
                 {"role": "user", "content": prompt}
@@ -125,9 +124,9 @@ Resume:
 
         result = safe_json_parse(content)
 
-        # -----------------------------
+    
         # 4. Ensure safe schema (prevents KeyError later)
-        # -----------------------------
+     
         safe_result = {
             "score": result.get("score", 0),
             "summary": result.get("summary", ""),
