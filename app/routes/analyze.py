@@ -42,7 +42,7 @@ async def analyze_resume(request: ResumeRequest):
 
         "resumeFileName": "uploaded_resume.pdf",
 
-        "atsScore": ai_result["atsScore"],
+        "atsScore": ai_result.get("score", 0),
 
         "summary": ai_result["summary"],
 
