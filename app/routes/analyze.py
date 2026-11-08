@@ -2,7 +2,7 @@ from fastapi import APIRouter
 
 from pydantic import BaseModel
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 
@@ -28,7 +28,7 @@ class ResumeRequest(BaseModel):
 
 @router.post("/text")
 
-async def analyze_resume(request: ResumeRequest):
+def analyze_resume(request: ResumeRequest):
 
 
 
@@ -46,7 +46,7 @@ async def analyze_resume(request: ResumeRequest):
 
         "summary": ai_result["summary"],
 
-        "createdAt": datetime.utcnow().isoformat(),
+        "createdAt": datetime.now(timezone.utc).isoformat(),
 
         "strengths": ai_result["strengths"],
 

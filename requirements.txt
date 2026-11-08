@@ -4,7 +4,7 @@ uvicorn
 
 python-multipart
 
-openai
+python-dotenv
 
 redis
 
